@@ -34,8 +34,9 @@ Disks contain the actual data (boot volumes, data volumes, etc.)</p>
 of the Hardware thanks to the hypervisor. So a VHD is type of disk drive that has similar 
 functionalities as a typical hard drive but is accessed, managed and installed 
 on a virtual machine infrastructure, such as Hyper-V, VMWare Workstation, etc...</p>
-
-<h2> What is Operating System </h2>
+<h2>What is LVM</h2>
+LVM stands for Logical Volume Management. It is a system of managing logical volumes, or filesystems, that is much more advanced and flexible than the traditional method of partitioning a disk into one or more segments and formatting that partition with a filesystem. LVM as "dynamic partitions", meaning that you can create/resize/delete LVM "partitions" (they're called "Logical Volumes" in LVM-speak) from the command line while your Linux system is running: no need to reboot the system to make the kernel aware of the newly-created or resized partitions.
+<h2> What is Operating System?</h2>
 An operating system (OS) is the program that, after being initially loaded into the computer by a boot program, manages all of the other application programs in a computer. The application programs make use of the operating system by making requests for services through a defined application program interface (API).
 
 <h2> What is UNIX? </h2>
@@ -101,6 +102,8 @@ Apt-get being a lower level package manager is restricted only to command line, 
 <h2> What is AppArmor </h2>
 AppArmor ("Application Armor") is a Linux kernel security module that supplements the standard Linux user and group based permissions to confine programs to a limited set of resources. AppArmor can be configured for any application to reduce its potential attack surface and provide greater in-depth defense. It is configured through profiles tuned to allow the access needed by a specific program or container, such as Linux capabilities, network access, file permissions, etc. Each profile can be run in either enforcing mode, which blocks access to disallowed resources, or complain mode, which only reports violations.
 
+
+
 <h2>Set the basic up</h2>
 <p> Login as root: <code>su -</code></p>
 <p> Update & Upgrade: <code> apt update</code> and <code> apt upgrade</code></p>
@@ -127,7 +130,7 @@ The main goal here is to force users to use strong passwords in linux
 <p>To back up the file where all the password policies are:</p>
 <p><code>sudo cp /etc/pam.d/common-password /etc/pam.d/common-password.bak </code></p>
 <p>Opens the file where the user password policies will be changed:</p>
-<p><code>sudo nano /etc/pam.d/common-password </p>
+<p><code>sudo nano /etc/pam.d/common-password</code></p>
 <p>Add the following line to the file: <code>password required pam_cracklib.so retry=3 minlen=10 lcredit=-1 ucredit=-1 dcredit=-1 difok=7 reject_username </code></p>
 Explanation:
 <p><code> retry=3 </code>, number of tries</p>
@@ -136,20 +139,64 @@ Explanation:
 <p><code>dcredit=-1</code>, must have at least one digit</p>
 <p><code>difok=7</code>, number of characters that must be different from the last password </p>
 <p><code>reject_username </code>, the password cannot include username</p>
+<p><code>enforce_for_root </code>, to implement the same policy on root</p>
 <p> File where I change the number of days before the password expire, minimum number of days allowed before the modification of a password and the number of days the user has to receive a warning message before their password expires: <code>sudo nano /etc/login.defs</code></p>
+<h4>Get the password expiry information</h4>
+<code>sudo change -l < username ></code>
 
 <h2>Setup SSH Service</h2>
-<h3>What is SSH</h3>
+<h3>What is SSH?</h3>
 SSH or Secure Shell is a network communication protocol that enables two computers to communicate and share data. An inherent feature of ssh is that the communication between the two computers is encrypted meaning that it is suitable for use on insecure networks. SSH is often used to "login" and perform operations on remote computers but it may also be used for transferring data.
-<h3>What is OpenSSH</h3>
+<h3>What is OpenSSH?</h3>
 OpenSSH is an open-source implementation of the SSH protocol. It is based on the free version by Tatu Ylonen and further developed by the OpenBSD team and the user community.
 <h3>What is a SSH key?</h3>
 SSH keys are a pair of public and private keys that are used to authenticate and establish an encrypted communication channel between a client and a remote machine over the internet.
 <h3>Setup</h3>
 <p> Install OpenSSH: <code>sudo apt install openssh-server</code></p>
 <p> Verify ssh service: <code>sudo systemctl status ssh</code></p>
-<p> Get your ip: <code>ip a</code></p>
-<p> Add port 4242: go to <code>/etc/ssh</code>, run <code>sudo vim sshd_config</code> and edit the <code>#Port22</code> to <code>Port 4242</code></p>
-<p> Install UFW Firewall: <code> sudo apt install ufw</code></p>
+<p> Start ssh service: <code>sudo systemctl start ssh</code></p>
+<p> Stop ssh service: <code>sudo systemctl stop ssh</code></p>
+<p> To start the ssh server everytime I boot the VM: <code>sudo systemctl enable ssh</code></p>
+<p> Add port 4242: go to <code>/etc/ssh</code>, run <code>sudo nano sshd_config</code> and edit the <code>#Port22</code> to <code>Port 4242</code></p>
+<p>To remotly acess the VM with ssh: <code>ssh < username >@< ip-addr > -p 4242</code>
+<p> To terminate SSH session anytime: <code>logout</code>
+<p>Check installation: <code>dpkg -l | grep ssh</code></p>
+
+
+<h2>Hostname and Partitions</h2>
+<h3>What is a Firewall?</h3>
+A Firewall is a network security device that monitors and filters incoming and outgoing network traffic based on an organization's previously established security policies. At its most basic, a firewall is essentially the barrier that sits between a private internal network and the public Internet.
+<h3>What is UFW Firewall?</h3>
+Uncomplicated Firewall (UFW) is a program for managing a netfilter firewall designed to be easy to use. It uses a command-line interface consisting of a small number of simple commands, and uses iptables for configuration. UFW is available by default in all Ubuntu installations since 8.04 LTS.
+<h3>What is a hostname?</h3>
+<p>A hostname is a label assigned to a machine that identifies the machine on the network. Each device in the network should have a unique hostname.</p>
+<h3>Setup</h3>
+<p> Get your ip: <code>ip a</code>or<code>hostname -I</code></p>
+<p> Know what user I am using: <code>whoami</code></p>
+
+<p> Install UFW Firewall: <code> sudo apt install ufw</code>(should reboot after)</p>
 <p> Activate UFW: <code>sudo ufw enable</code></p>
-<p> To check if its enable <code>sudo ufw status</code></p>
+<p> To check if its enable: <code>sudo systemctl status ufw</code>, if it isn't do <code>sudo ufw enable</code></p>
+<h2>Sudo Policy</h2>
+<h3>What is TTY?</h3>
+Linux operating system represents everything in a file system, the hardware devices that we attach are also represented as a file. The terminal is also represented as a file. There a command exists called tty which displays information related to terminal. The tty command of terminal basically prints the file name of the terminal connected to standard input. tty is short of teletype, but popularly known as a terminal it allows you to interact with the system by passing on the data (you input) to the system, and displaying the output produced by the system.
+<h3>What is visudo command?</h3>
+The visudo command opens a text editor like normal, but it validates the syntax of the file upon saving. This prevents configuration errors from blocking sudo operations, which may be your only way of obtaining root privileges. Traditionally, visudo opens the /etc/sudoers file with the vi text editor.
+<h3>Setup</h3>
+<p> Go to <code>/etc/sudoers.d</code>  and run <code>sudo visudo</code></p>
+<p> Find the <code>Defaults</code> section and add:</p>
+<p> To enable TTY <code> Defaults        requiretty</code></p>
+<p> To select the right folder for your log files <code> Defaults        logfile="/var/log/sudo/sudo.log"</code></p>
+<p>To archive all sudo inputs & outputs to /var/log/sudo/: </p><code>Defaults        iolog_dir="/var/log/sudo"</code></p>
+<code>Defaults        log_input, log_output</code></p>
+<p> To set your password retries (It usually comes 3 times as default, but still...) <code> Defaults        passwd_tries=3</code></p>
+<p> To enable TTY <code> Defaults        badpass_message="Your message"</code></p>
+<p> The security pass probably is already there, but in case it isn't <code>Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"</code></p>
+Check if sudo is installed: <code>dpkg -l | grep sudo</code>
+
+<h2>Setting up cron</h2>
+<h3>What is cron</h3>
+The cron command-line utility is a job scheduler on Unix-like operating systems. Users who set up and maintain software environments use cron to schedule jobs[1] (commands or shell scripts), also known as cron jobs,[2][3] to run periodically at fixed times, dates, or intervals.
+<h3>Setup</h3>
+<p>To configure cron as root: <code>sudo crontab -u root -e</code></p>
+Replace <code># m h  dom mon dow   command</code> to <code>*/10 * * * * sh /path/to/script</code>
