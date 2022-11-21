@@ -112,5 +112,21 @@ A sudo group is a group of superusers that have privileged access to root comman
 <p> File where I change the number of days before the password expire, minimum number of days allowed before the modification of a password and the number of days the user has to receive a warning message before their password expires: <code>sudo nano /etc/login.defs</code></p>
 <p> How to find the name and the version of the OS in linux: <code>cat /etc/os-release</code> 
 
-
+<h2> Password protection </h2>
+The main goal here is to force users to use strong passwords in linux
+<h3> Linux PAM </h3>
+<p>Linux Pluggable Authentication Modules (PAM) is a suite of libraries that allows a Linux system administrator to configure methods to authenticate users. It provides a flexible and centralized way to switch authentication methods for secured applications by using configuration files instead of changing application code. It by default installed on Linux.</p>
+<p>Instalation of an adicional module: <code>sudo apt install libpam-crack </code></p>
+<p>To back up the file where all the password policies are:</p>
+<p><code>sudo cp /etc/pam.d/common-password /etc/pam.d/common-password.bak </code></p>
+<p>Opens the file where the user password policies will be changed:</p>
+<p><code>sudo nano /etc/pam.d/common-password </p>
+<p>Add the following line to the file: <code>password required pam_cracklib.so retry=3 minlen=10 lcredit=-1 ucredit=-1 dcredit=-1 difok=7 reject_username </code></p>
+Explanation:
+<p><code> retry=3 </code>, number of tries</p>
+<p><code>lcredit=-1</code>, must have at least one lowercase</p>
+<p><code>ucredit=-1</code>, must have at least one uppercase</p>
+<p><code>dcredit=-1</code>, must have at least one digit</p>
+<p><code>difok=7</code>, number of characters that must be different from the last password </p>
+<p><code>reject_username </code>, the password cannot include username</p>
 <h2>SSH</h2>
