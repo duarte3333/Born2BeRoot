@@ -171,6 +171,10 @@ SSH keys are a pair of public and private keys that are used to authenticate and
 <p> Stop ssh service: <code>sudo systemctl stop ssh</code></p>
 <p> To start the ssh server everytime I boot the VM: <code>sudo systemctl enable ssh</code></p>
 <p> Add port 4242: go to <code>/etc/ssh</code>, run <code>sudo nano sshd_config</code> and edit the <code>#Port22</code> to <code>Port 4242</code></p>
+<p>See all UFW rules: <code>ufw status</code></p>
+<p>Add rules: <code>sudo ufw allow 80</code></p>
+<>Delete rules: <code>sudo ufw delete allow 80</code></p>
+<p>Delete a UFW rule: <code>ufw delete NUM</code><p>
 <p>To remotly acess the VM with ssh: <code>ssh < username >@< ip-addr > -p 4242</code>
 <p> To terminate SSH session anytime: <code>logout</code>
 <p>Check installation: <code>dpkg -l | grep ssh</code></p>
