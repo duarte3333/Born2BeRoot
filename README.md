@@ -114,18 +114,25 @@ Sudo (sometimes considered as short for Super-user do) is a program designed to 
 A user can create, delete, or modify the file. Group: A group can contain multiple users. All the users belonging to a group have same access permission for a file. Other: Any one who has access to the file other than user and group comes in the category of other.
 <h3> What is a Sudo group? </h3>
 A sudo group is a group of superusers that have privileged access to root commands.
-<h3>Setup</h3>
+<h3>Users and Groups</h3>
+
+<h5>Users</h5>
+<p> Add a user: <code>adduser < username ></code></p>
+<p> Delete a user: <code>deluser newuser</code>
+<p> If signed in as another non-root user with sudo privileges: <code>sudo deluser newuser</code>
+<p>Other way of remove a user(su -): <code>userdel < username ></code> and  to remove the user’s home directory and mail spool:<code>userdel -r < username ></code></p>
+<p>How to change user: <code>sudo -u < user > -s</code><p>
+<p>Change a password of current user: <code>passwd</code></p>
+<p>Change a password of other user: <code>sudo passwd < username ></code></p>
+<p>See all users: <code>getent passwd</code>
+
+<h5>Groups</h5>
 <p> Create a group: <code>groupadd < namegroup ></code>
 <p> Add user to sudo group: <code>adduser dsa-mora sudo</code></p>
 <p> Add user to user42 group(should be done in root): <code>adduser dsa-mora user42</code></p>
-<p> Delete a user: <code>deluser newuser</code>
-<p> If signed in as another non-root user with sudo privileges: <code>sudo deluser newuser</code>
 <p> To check if your user is in the sudo group <code>getent group sudo</code></p>
+<h3>Version of OS</h3>
 <p> How to find the name and the version of the OS in linux: <code>cat /etc/os-release</code> 
-<p>How to change user: <code>sudo -u < user > -s</code><p>
-<p>How to remove a user(su -): <code>userdel < username ></code> and delete the user’s home directory <code>userdel -r < username ></code></p>
-<p>Command to change a password of a user: <code>sudo passwd vivek < username ></code></p>
-<p>See all users: <code>getent passwd</code>
 
 
 <h2> Password protection </h2>
@@ -137,7 +144,7 @@ The main goal here is to force users to use strong passwords in linux
 <p><code>sudo cp /etc/pam.d/common-password /etc/pam.d/common-password.bak </code></p>
 <p>Opens the file where the user password policies will be changed:</p>
 <p><code>sudo nano /etc/pam.d/common-password</code></p>
-<p>Add the following line to the file: <code>password required pam_cracklib.so retry=3 minlen=10 lcredit=-1 ucredit=-1 dcredit=-1 difok=7 reject_username </code></p>
+<p>Add the following line to the file: <code>password required pam_cracklib.so retry=3 minlen=10 lcredit=-1 ucredit=-1 dcredit=-1 difok=7 reject_username enforce_for_root</code></p>
 Explanation:
 <p><code> retry=3 </code>, number of tries</p>
 <p><code>lcredit=-1</code>, must have at least one lowercase</p>
@@ -170,8 +177,6 @@ SSH keys are a pair of public and private keys that are used to authenticate and
 
 
 <h2>Hostname and Partitions</h2>
-<h3>What is a hostname?</h3>
-In computer networking, a hostname is a label that is assigned to a device connected to a computer network and that is used to identify the device in various forms of electronic communication, such as the World Wide Web. In brief, the hostname is what a device is called on a network.
 <h3>What is a Firewall?</h3>
 A Firewall is a network security device that monitors and filters incoming and outgoing network traffic based on an organization's previously established security policies. At its most basic, a firewall is essentially the barrier that sits between a private internal network and the public Internet.
 <h3>What is UFW Firewall?</h3>
@@ -208,14 +213,23 @@ Check if sudo is installed: <code>dpkg -l | grep sudo</code>
 <h2>Setting up cron</h2>
 <h3>What is cron</h3>
 The cron command-line utility is a job scheduler on Unix-like operating systems. Users who set up and maintain software environments use cron to schedule jobs[1] (commands or shell scripts), also known as cron jobs,[2][3] to run periodically at fixed times, dates, or intervals.
-<h3>Setup</h3>
-<p>To configure cron as root: <code>sudo crontab -u root -e</code></p>
+<h3>Crontab configuration</h3>
+<p><code>sudo apt-get update -y</code></p>
+<p><code>sudo apt-get install -y net-tools</code></p>
+<p><code>cd /usr/local/bin/</code></p>
+<p><code>touch monitoring.sh</code></p>
+<p><code>chmod 777 monitoring.sh</code></p>
+<p>Open vim and put the code of the section bellow of monitoring.sh.</p>
+<p>Add in this line <code>your_username ALL=(ALL) NOPASSWD: /usr/local/bin/monitoring.sh</code> under where its written %sudo ALL=(ALL:ALL) ALL</p>
+<p>To execute your script as su (super user): <code>sudo /usr/local/bin/monitoring.sh </code></p>
+<p>To open and configure cron as root: <code>sudo crontab -u root -e</code></p>
 Replace <code># m h  dom mon dow   command</code> to <code>*/10 * * * * sh /path/to/script</code>
+
 
 <h2 id="Script">Script</h2>
 <h3> Create script </h3>
 <p> Run: <code>sudo vim /usr/local/bin/monitoring.sh</code></p>
-<p> Every bash script start with <code>#!/bin/bash</code></p>
+<p> Every bash script start with(only runs with bash)<code>#!/bin/bash</code></p>
 <p> <code>wall</code> is a command-line utility that displays a message on the terminals of all logged-in users. The messages can be either typed on the terminal or the contents of a file.</p>
 <h3> Architecture </h3>
 <p> The command <code>uname -a</code> is use to get the architecture, <code>uname</code> is used to to print certain system information including kernel name, and the <code>-a</code> or <code>all</code> print all information </p>
