@@ -281,5 +281,9 @@ Replace <code># m h  dom mon dow   command</code> to <code>*/10 * * * * sh /path
 <p> The final command <code>journalctl _COMM=sudo | grep COMMAND | wc -l</code></p>
 <p> Now lets use wall to print all the variables with the right text to it looks pretty.</p>
 
-<h3>Installation</h3>
-I have my folder with my vdi in: cd sgoinfre/born2beroot
+<h3>Signature</h3>
+<p>Open terminal</p>
+<p>Then type cd sgoinfre/students/<your_intra_username>/VirtualBox VMs</p>
+Then type <code>shasum VirtualBox.vdi</code> or whatever your Virtual Machine .vdi file is called.
+After a few mins, you should see an output similar to this - 6e657c4619944be17df3c31faa030c25e43e40af
+Copy the signature number and create a .txt file and paste your number in the .txt file you just created, ready for submission.
