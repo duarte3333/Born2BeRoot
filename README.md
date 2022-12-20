@@ -243,7 +243,7 @@ Replace <code># m h  dom mon dow   command</code> to <code>*/10 * * * * sh /path
 <h3> Virtual CPU </h3>
 <p> To list how many virtual processors you have you can use <code>grep "^processor" /proc/cpuinfo | wc -l</code></p>
 <h3> Free RAM and usage % </h3>
-<p> To see the free RAM we to run <code>free -m</code> the <code>-m</code> flag makes the output in MB as we want.</p>
+<p> To see the free RAM we run <code>free -m</code> the <code>-m</code> flag makes the output in MB as we want.</p>
 <p> We only want the Mem row,to do that we can <code>grep Mem</code>, the available memory is in the 4th column, to represent that we use <code>$4</code>, and to show just that value we will use <code>awk '{print $4}'</code>, if you don't know what <code><a href="https://www.geeksforgeeks.org/awk-command-unixlinux-examples/" target="_blank">awk</a></code> is, got study please!</p>
 <p> So overall the command is <code>free -m | grep Mem | awk '{print $4}'</code></p>
 <p> To get the total RAM memory we will do the same but instead of the column <code>$4</code> the total memory is in the column <code>$2</code></p>
