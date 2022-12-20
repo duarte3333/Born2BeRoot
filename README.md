@@ -243,7 +243,7 @@ Replace <code># m h  dom mon dow   command</code> to <code>*/10 * * * * sh /path
 <h3> Virtual CPU </h3>
 <p> To list how many virtual processors you have you can use <code>grep "^processor" /proc/cpuinfo | wc -l</code></p>
 <h3> Free RAM and usage % </h3>
-<p> Now, lets set the free RAM and it's percentage, to see the free RAM we have lets run <code>free -m</code> the <code>-m</code> flag makes the output in MB as we want.</p>
+<p> To see the free RAM we to run <code>free -m</code> the <code>-m</code> flag makes the output in MB as we want.</p>
 <p> We only want the Mem row,to do that we can <code>grep Mem</code>, the available memory is in the 4th column, to represent that we use <code>$4</code>, and to show just that value we will use <code>awk '{print $4}'</code>, if you don't know what <code><a href="https://www.geeksforgeeks.org/awk-command-unixlinux-examples/" target="_blank">awk</a></code> is, got study please!</p>
 <p> So overall the command is <code>free -m | grep Mem | awk '{print $4}'</code></p>
 <p> To get the total RAM memory we will do the same but instead of the column <code>$4</code> the total memory is in the column <code>$2</code></p>
@@ -275,8 +275,7 @@ Replace <code># m h  dom mon dow   command</code> to <code>*/10 * * * * sh /path
 <p> Setting the IP of our server we will search the IP of the host, if you run <code>hostname</code> it displays the system's DNS name, and if you had the flag <code>-I</code> it display  all  network  addresses  of the host, so just use <code>hostname -I</code></p>
 <p> To find the MAC (Media Access Control) we can use the <code>ip</code> that shows / manipulate routing, network devices, interfaces and tunnels, and with the object <code>link show</code> shows the network device. The lines we want are the ones that have ether, so just <code>grep ether</code> and to get the MAC we just need to print the column <code>$2</code>, in the end is just <code>ip link show | grep ether | awk '{print $2}'</code></p>
 <h3> Numbers of sudo commands</h3>
-<p> I tried so hard to do this with install netstat, but couldn't get to the right number, so just <code>sudo apt install net-tools</code></p>
-<p> Now we have access to the command <code>journalctl</code> may be used to query the contents of the systemd(1) journal as
+<p> The command <code>journalctl</code> may be used to query the contents of the systemd(1) journal as
   written by systemd-journald.service(8), lets add <code>_COMM</code> to match for the script name <code>(sudo)</code>is added to the query. Lets grab just the commands thats what we want <code>grep COMMAND</code>, and lets cound the number of lines <code>wc -l</code> </p>
 <p> The final command <code>journalctl _COMM=sudo | grep COMMAND | wc -l</code></p>
 <p> Now lets use wall to print all the variables with the right text to it looks pretty.</p>
